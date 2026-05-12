@@ -85,6 +85,23 @@ export async function getHaravanSessionById(sessionId: string): Promise<HaravanS
   return data as HaravanSessionRow | null;
 }
 
+/**
+ * Lấy 1 session bất kỳ (mới nhất) của org — dùng cho proxy storefront khi không có cookie session.
+ * Có thể có nhiều user trong cùng org → chọn row updated_at desc.
+ */
+export async function getHaravanSessionByOrgId(orgId: string): Promise<HaravanSessionRow | null> {
+  const admin = getSupabaseAdmin();
+  const { data, error } = await admin
+    .from('haravan_sessions')
+    .select('*')
+    .eq('orgid', orgId)
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data as HaravanSessionRow | null;
+}
+
 export async function updateSessionTokens(
   sessionId: string,
   input: {

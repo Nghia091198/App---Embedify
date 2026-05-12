@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { saveOAuthState } from '../../db/sessionStore.js';
 
 export const HARAVAN_SCOPES =
-  'openid profile email org userinfo offline_access grant_service wh_api com.read_shop com.read_products com.write_products web.read_contents web.write_contents web.read_script_tags com.write_script_tags';
+  'openid profile address email phone org userinfo grant_service web.write_contents web.read_contents com.write_products com.read_products com.read_shop web.write_themes web.read_themes web.write_script_tags web.read_script_tags';
 
 export async function installHandler(req: Request, res: Response): Promise<void> {
   try {

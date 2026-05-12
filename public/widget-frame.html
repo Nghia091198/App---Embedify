@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" />
+    <style>
+         :root {
+            --wg-color: #e84040;
+            --wg-font: 'Be Vietnam Pro', system-ui, sans-serif;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            height: auto;
+            overflow-x: hidden;
+        }
+        
+        body {
+            background: transparent;
+            font-family: var(--wg-font);
+            height: auto;
+            min-height: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+        /* ===== BLOCK LAYOUT ===== */
+        
+        #wg-root {
+            background: var(--wg-page-bg, transparent);
+            color: var(--wg-page-text, inherit);
+        }
+        
+        .wg-block-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--wg-title-text, #1a1a1a);
+            margin-bottom: 16px;
+            font-family: var(--wg-font);
+        }
+        
+        .wg-block.wg-block--empty .wg-block-empty {
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 1px dashed #e2e8f0;
+            background: #f8fafc;
+            color: #94a3b8;
+        }
+        
+        .wg-block-empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 9999px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            color: #cbd5e1;
+        }
+        
+        .wg-block--grid .wg-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .wg-grid.wg-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .wg-grid.wg-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .wg-grid.wg-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .wg-grid.wg-cols-5 {
+            grid-template-columns: repeat(5, 1fr);
+        }
+        
+        @media (max-width: 767px) {
+            .wg-grid.wg-cols-m-1 {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            .wg-grid.wg-cols-m-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .wg-block--slider {
+            overflow: hidden;
+        }
+        
+        .wg-block--slider .wg-slider {
+            width: 100%;
+            position: relative;
+        }
+        
+        .wg-block--slider .wg-slider[data-wg-overflow="1"] {
+            padding-bottom: 28px;
+        }
+        
+        .wg-block--slider .wg-slider[data-wg-overflow="1"] .swiper-pagination {
+            bottom: 4px !important;
+        }
+        
+        .wg-block--slider .wg-slider .swiper-button-prev,
+        .wg-block--slider .wg-slider .swiper-button-next {
+            color: #1d9e75;
+        }
+        
+        .wg-block--slider .swiper-wrapper {
+            display: flex;
+            align-items: stretch;
+        }
+        
+        .wg-block--slider .swiper-slide {
+            height: auto;
+        }
+        /* ===== PRODUCT CARD ===== */
+        
+        .wg-product-card {
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+            font-family: var(--wg-font);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid var(--wg-border, transparent);
+            border-radius: 16px;
+        }
+        
+        .wg-product-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #222;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            z-index: 2;
+        }
+        
+        .wg-product-link {
+            display: block;
+            text-decoration: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .wg-product-image-outer {
+            position: relative;
+        }
+        /** Quickview chỉ QV: nút căn giữa ảnh, hiện khi hover card (desktop) / luôn có vùng bấm (touch) */
+        
+        .wg-product-image-outer--qv .wg-product-qv-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(26, 26, 26, 0.14);
+            opacity: 0;
+            transition: opacity 0.22s ease;
+            pointer-events: none;
+        }
+        
+        @media (hover: hover) {
+            .wg-product-card:hover .wg-product-image-outer--qv .wg-product-qv-overlay,
+            .wg-product-card:focus-within .wg-product-image-outer--qv .wg-product-qv-overlay {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+        
+        @media (hover: none) {
+            .wg-product-image-outer--qv .wg-product-qv-overlay {
+                opacity: 1;
+                pointer-events: none;
+                background: linear-gradient(180deg, transparent 52%, rgba(0, 0, 0, 0.38) 100%);
+                align-items: flex-end;
+                padding-bottom: 12px;
+            }
+            .wg-product-image-outer--qv .wg-action-view--overlay {
+                pointer-events: auto;
+            }
+        }
+        
+        .wg-product-image-wrap {
+            background: #f5f3ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .wg-product-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.3s ease;
+        }
+        
+        .wg-product-card:hover .wg-product-image-wrap img {
+            transform: scale(1.04);
+        }
+        
+        .wg-product-thumbs {
+            display: flex;
+            gap: 6px;
+            padding: 8px 0px 4px;
+        }
+        
+        .wg-thumb {
+            width: 44px;
+            height: 40px;
+            border-radius: 7px;
+            border: 1.5px solid transparent;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.15s;
+            flex-shrink: 0;
+            background: #f0ede8;
+        }
+        
+        .wg-thumb.active {
+            border-color: var(--wg-color);
+        }
+        
+        .wg-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .wg-product-info {
+            padding: 6px 0px 12px;
+            /* flex: 1; */
+            display: flex;
+            flex-direction: column;
+            margin-top: auto;
+        }
+        
+        .wg-product-sku {
+            font-size: 10px;
+            color: #aaa;
+            margin-bottom: 3px;
+        }
+        
+        .wg-product-name-link {
+            text-decoration: none;
+        }
+        
+        .wg-product-name-link:hover .wg-product-name {
+            color: var(--wg-link-hover, var(--wg-color, #e84040));
+        }
+        
+        .wg-product-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--wg-page-text, #1a1a1a);
+            line-height: 1.35;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .wg-product-price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .wg-price-sale {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--wg-color);
+        }
+        
+        .wg-price-original {
+            font-size: 12px;
+            color: #bbb;
+            text-decoration: line-through;
+        }
+        
+        .wg-product-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 8px;
+            margin-top: auto;
+        }
+        
+        .wg-action-view {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            box-sizing: border-box;
+            background: #fff;
+            border: 1.5px solid color-mix(in srgb, var(--wg-color) 32%, #e0ddd8);
+            border-radius: 10px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+        
+        .wg-action-view:hover {
+            background: color-mix(in srgb, var(--wg-color) 8%, #fff);
+            border-color: color-mix(in srgb, var(--wg-color) 55%, #e0ddd8);
+        }
+        
+        .wg-action-view--overlay {
+            width: 48px;
+            height: 48px;
+            border-radius: 9999px;
+            border: none;
+            background: #fff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+        }
+        
+        .wg-action-view--overlay:hover {
+            background: #fff;
+            border: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+        }
+        
+        .wg-action-view svg {
+            width: 18px;
+            height: 18px;
+            color: var(--wg-color);
+        }
+        
+        .wg-qty-wrap {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            border: 1.5px solid #e8e5e0;
+            border-radius: 10px;
+            flex: 1.2;
+            height: 40px;
+            box-sizing: border-box;
+            overflow: hidden;
+            background: #fff;
+        }
+        
+        .wg-qty-number {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 400;
+            color: #222;
+            line-height: 1;
+        }
+        
+        .wg-qty-divider {
+            width: 1px;
+            height: auto;
+            background: #e0ddd8;
+            margin: 0;
+        }
+        
+        .wg-qty-btn-wrap {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .wg-qty-btn {
+            flex: 1;
+            background: #fff;
+            border: none;
+            font-size: 11px;
+            color: #888;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            font-weight: 700;
+            transition: color 0.15s, background 0.15s;
+        }
+        
+        .wg-qty-btn+.wg-qty-btn {
+            border-top: 1px solid #e0ddd8;
+        }
+        
+        .wg-qty-btn:hover {
+            color: #333;
+        }
+        
+        .wg-btn-addcart {
+            flex: 1 1 120px;
+            min-height: 40px;
+            background: var(--wg-btn-bg, var(--wg-color));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 12px;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+        
+        .wg-btn-addcart:hover {
+            background: color-mix(in srgb, var(--wg-btn-bg, var(--wg-color)) 85%, black);
+        }
+        
+        .wg-btn-contact {
+            flex: 1 1 120px;
+            min-height: 44px;
+            background: var(--wg-btn-bg, var(--wg-color));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 12px;
+            transition: background 0.15s;
+            font-family: inherit;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .wg-btn-contact:hover {
+            background: color-mix(in srgb, var(--wg-btn-bg, var(--wg-color)) 85%, black);
+            color: #fff;
+        }
+        
+        .wg-btn-addcart.loading {
+            background: #888;
+            cursor: not-allowed;
+        }
+        
+        .wg-btn-addcart.success {
+            background: #27ae60;
+        }
+        
+        .wg-btn-addcart svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            transform: translateX(2px);
+        }
+        /* ===== TOAST (in iframe — fallback khi snippet chưa kịp toast trên page) ===== */
+        
+        .wg-toast {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120%);
+            background: #1d9e75;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+            z-index: 2147483647;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform .25s ease, opacity .25s ease;
+            max-width: calc(100vw - 32px);
+            text-align: center;
+            font-family: var(--wg-font);
+        }
+        
+        .wg-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        @media screen and (max-width: 992px) {
+            .wg-product-actions {
+                gap: 6px;
+            }
+            .wg-btn-addcart {
+                font-size: 0;
+                flex: 0.5;
+                padding: 0;
+                max-width: 40px;
+            }
+            .wg-btn-addcart svg {
+                font-size: initial;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wg-root"></div>
+    <div id="wg-toast" class="wg-toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // ============================================================
+        // CONFIG TỪ URL PARAMS
+        // ============================================================
+        var WG_PARAMS = new URLSearchParams(location.search);
+        var APP_URL = (WG_PARAMS.get('app') || '').replace(/\/$/, '');
+        var ORG_ID = WG_PARAMS.get('org') || '';
+        var CONTENT_TYPE = WG_PARAMS.get('ct') || '';
+        var CONTENT_ID = WG_PARAMS.get('cid') || '';
+        /** Single-block mode: 1 iframe = 1 block. `bi` (block_index) lọc API trả đúng block của iframe này. */
+        var BLOCK_INDEX = WG_PARAMS.get('bi');
+
+        // ============================================================
+        // FETCH + INJECT BLOCKS + RESIZE PIPELINE
+        // ============================================================
+        var scheduleNotifyHeight;
+        (function() {
+            function sortBlocks(blocks) {
+                function positionRank(position) {
+                    if (position === 'start') return 0;
+                    if (position === 'end') return 2;
+                    if (typeof position === 'string' && position.indexOf('after_p_') === 0) return 1;
+                    return 2;
+                }
+
+                function afterIndex(position) {
+                    if (typeof position !== 'string' || position.indexOf('after_p_') !== 0) return 9007199254740991;
+                    var n = parseInt(position.replace('after_p_', ''), 10);
+                    return isFinite(n) ? n : 9007199254740991;
+                }
+                return blocks.slice().sort(function(a, b) {
+                    var ra = positionRank(a.position);
+                    var rb = positionRank(b.position);
+                    if (ra !== rb) return ra - rb;
+                    if (ra === 1) return afterIndex(a.position) - afterIndex(b.position);
+                    return 0;
+                }).reverse();
+            }
+
+            var swiperInstances = [];
+
+            function initSwipers(root) {
+                if (!window.Swiper) return;
+                swiperInstances.forEach(function(s) {
+                    try {
+                        s.destroy(false, false);
+                    } catch (e0) {}
+                });
+                swiperInstances.length = 0;
+                root.querySelectorAll('.swiper[data-desktop]').forEach(function(el) {
+                    var desktop = parseFloat(el.getAttribute('data-desktop') || '4');
+                    var mobile = parseFloat(el.getAttribute('data-mobile') || '1.5');
+                    var gapRaw = parseInt(el.getAttribute('data-gap') || '12', 10);
+                    var gap = isFinite(gapRaw) ? Math.min(48, Math.max(8, gapRaw)) : 12;
+                    try {
+                        var overflow = el.getAttribute('data-wg-overflow') === '1';
+                        var nextEl = overflow ? el.querySelector('.swiper-button-next') : null;
+                        var prevEl = overflow ? el.querySelector('.swiper-button-prev') : null;
+                        var pagEl = overflow ? el.querySelector('.swiper-pagination') : null;
+                        var sw = new Swiper(el, {
+                            slidesPerView: mobile,
+                            spaceBetween: gap,
+                            grabCursor: true,
+                            observer: true,
+                            observeParents: true,
+                            observeSlideChildren: true,
+                            breakpoints: {
+                                768: {
+                                    slidesPerView: desktop,
+                                    spaceBetween: gap
+                                }
+                            },
+                            navigation: overflow && nextEl && prevEl ? {
+                                nextEl: nextEl,
+                                prevEl: prevEl
+                            } : undefined,
+                            pagination: overflow && pagEl ? {
+                                el: pagEl,
+                                clickable: true,
+                                dynamicBullets: true
+                            } : undefined,
+                        });
+                        swiperInstances.push(sw);
+                        if (typeof sw.on === 'function') {
+                            sw.on('resize', function() {
+                                scheduleNotifyHeight();
+                            });
+                            sw.on('breakpoint', function() {
+                                scheduleNotifyHeight();
+                            });
+                        }
+                    } catch (e) {}
+                });
+            }
+
+            var notifyTimer = null;
+            var ro = null;
+            var viewportListenersBound = false;
+
+            function measureHeight() {
+                if (document.body) void document.body.offsetHeight;
+                var root = document.getElementById('wg-root');
+                var candidates = [
+                    root ? root.scrollHeight : 0,
+                    document.documentElement ? document.documentElement.scrollHeight : 0,
+                    document.body ? document.body.scrollHeight : 0,
+                ];
+                return Math.ceil(Math.max.apply(null, candidates.concat([80])));
+            }
+
+            function notifyHeight() {
+                var h = measureHeight();
+                try {
+                    window.parent.postMessage({
+                        type: 'wg-widget-frame-resize',
+                        height: h
+                    }, '*');
+                } catch (e1) {}
+                try {
+                    window.parent.postMessage({
+                        type: 'wg-resize',
+                        height: h
+                    }, '*');
+                } catch (e2) {}
+            }
+
+            function runMeasurePipeline() {
+                swiperInstances.forEach(function(s) {
+                    try {
+                        s.update();
+                    } catch (e) {}
+                });
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        notifyHeight();
+                    });
+                });
+            }
+
+            scheduleNotifyHeight = function() {
+                if (notifyTimer) clearTimeout(notifyTimer);
+                notifyTimer = setTimeout(function() {
+                    notifyTimer = null;
+                    runMeasurePipeline();
+                }, 100);
+            };
+
+            function bindViewportListeners() {
+                if (viewportListenersBound) return;
+                viewportListenersBound = true;
+                var vv = window.visualViewport;
+                if (vv && vv.addEventListener) {
+                    vv.addEventListener('resize', scheduleNotifyHeight, {
+                        passive: true
+                    });
+                    vv.addEventListener('scroll', scheduleNotifyHeight, {
+                        passive: true
+                    });
+                }
+                window.addEventListener('orientationchange', function() {
+                    scheduleNotifyHeight();
+                    setTimeout(scheduleNotifyHeight, 250);
+                    setTimeout(scheduleNotifyHeight, 700);
+                }, {
+                    passive: true
+                });
+                try {
+                    var mq = window.matchMedia('(min-width: 768px)');
+                    var onMq = function() {
+                        scheduleNotifyHeight();
+                    };
+                    if (mq.addEventListener) mq.addEventListener('change', onMq);
+                    else if (mq.addListener) mq.addListener(onMq);
+                } catch (eMq) {}
+            }
+
+            window.addEventListener('message', function(e) {
+                if (!e.data || typeof e.data !== 'object') return;
+                if (e.data.type === 'wg-request-height') scheduleNotifyHeight();
+            });
+
+            if (!APP_URL || !CONTENT_TYPE || !CONTENT_ID || !ORG_ID) return;
+
+            var apiUrl = APP_URL + '/api/widget/blocks?content_type=' + encodeURIComponent(CONTENT_TYPE) +
+                '&content_id=' + encodeURIComponent(CONTENT_ID) +
+                '&org_id=' + encodeURIComponent(ORG_ID);
+            if (BLOCK_INDEX != null && BLOCK_INDEX !== '') {
+                apiUrl += '&bi=' + encodeURIComponent(BLOCK_INDEX);
+            }
+            fetch(apiUrl)
+                .then(function(r) {
+                    return r.json();
+                })
+                .then(function(res) {
+                    var cfg = res.config || {};
+                    window.__WG_PUBLIC_CFG = cfg;
+                    if (cfg.font_import_url) {
+                        var lid = 'wg-font-import-link';
+                        if (!document.getElementById(lid)) {
+                            var link = document.createElement('link');
+                            link.id = lid;
+                            link.rel = 'stylesheet';
+                            link.href = cfg.font_import_url;
+                            document.head.appendChild(link);
+                        }
+                    }
+                    var docEl = document.documentElement;
+
+                    function wgSetThemeVar(el, name, val) {
+                        if (val != null && String(val).trim() !== '') el.style.setProperty(name, String(val).trim());
+                        else el.style.removeProperty(name);
+                    }
+                    if (cfg.primary_color) docEl.style.setProperty('--wg-color', cfg.primary_color);
+                    if (cfg.font_family) docEl.style.setProperty('--wg-font', cfg.font_family);
+                    wgSetThemeVar(docEl, '--wg-page-bg', cfg.theme_page_bg);
+                    wgSetThemeVar(docEl, '--wg-page-text', cfg.theme_page_text);
+                    wgSetThemeVar(docEl, '--wg-title-text', cfg.theme_title_text);
+                    wgSetThemeVar(docEl, '--wg-border', cfg.theme_border_color);
+                    wgSetThemeVar(docEl, '--wg-btn-bg', cfg.theme_button_color);
+                    wgSetThemeVar(docEl, '--wg-link-hover', cfg.theme_link_hover_color);
+                    if (cfg.custom_css) {
+                        var sid = 'wg-custom-css';
+                        var old = document.getElementById(sid);
+                        if (old) old.remove();
+                        var st = document.createElement('style');
+                        st.id = sid;
+                        st.textContent = cfg.custom_css;
+                        document.head.appendChild(st);
+                    }
+                    try {
+                        window.parent.postMessage({
+                            type: 'wg-config',
+                            primaryColor: cfg.primary_color || '#e84040',
+                            fontFamily: cfg.font_family || '',
+                            fontImportUrl: cfg.font_import_url || '',
+                            customCss: cfg.custom_css || '',
+                        }, '*');
+                    } catch (eCfg) {}
+                    var blocks = res.blocks;
+                    if (!blocks || !blocks.length) {
+                        scheduleNotifyHeight();
+                        return;
+                    }
+                    var root = document.getElementById('wg-root');
+                    if (!root) return;
+                    sortBlocks(blocks).forEach(function(block) {
+                        if (!block || typeof block.html !== 'string') return;
+                        var wrap = document.createElement('div');
+                        wrap.innerHTML = block.html;
+                        var node = wrap.firstElementChild;
+                        if (node) root.appendChild(node);
+                    });
+                    initSwipers(root);
+                    try {
+                        ro = new ResizeObserver(function() {
+                            scheduleNotifyHeight();
+                        });
+                        ro.observe(root);
+                        if (document.documentElement) ro.observe(document.documentElement);
+                        if (document.body) ro.observe(document.body);
+                    } catch (eRo) {}
+                    window.addEventListener('resize', function() {
+                        scheduleNotifyHeight();
+                    }, {
+                        passive: true
+                    });
+                    bindViewportListeners();
+                    scheduleNotifyHeight();
+                    setTimeout(scheduleNotifyHeight, 100);
+                    setTimeout(scheduleNotifyHeight, 300);
+                    setTimeout(scheduleNotifyHeight, 800);
+                    setTimeout(scheduleNotifyHeight, 1500);
+                    root.querySelectorAll('img').forEach(function(img) {
+                        if (!img.complete) {
+                            img.addEventListener('load', scheduleNotifyHeight, {
+                                once: true
+                            });
+                            img.addEventListener('error', scheduleNotifyHeight, {
+                                once: true
+                            });
+                        }
+                    });
+                })
+                .catch(function() {});
+        })();
+
+        // ============================================================
+        // TOAST (fallback in-frame — toast chính hiển thị ở storefront page do snippet)
+        // ============================================================
+        var wgToastTimer = null;
+
+        function wgShowToast(msg, isError) {
+            var el = document.getElementById('wg-toast');
+            if (!el) return;
+            el.textContent = msg;
+            el.style.background = isError ? 'var(--wg-color)' : '#1d9e75';
+            el.classList.add('show');
+            if (wgToastTimer) clearTimeout(wgToastTimer);
+            wgToastTimer = setTimeout(function() {
+                el.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // ADD TO CART — postMessage lên parent snippet (cookie shopper)
+        // ============================================================
+        var wgAddToCartReqId = 0;
+
+        function wgAddToCart(variantId, qty, title, btn) {
+            if (!variantId) {
+                wgShowToast('Vui lòng chọn phân loại sản phẩm', true);
+                return;
+            }
+            if (btn) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            }
+            /** Toast "đang thêm" / success / error giờ render trên storefront page (snippet) — iframe chỉ giữ button state. */
+
+            var reqId = ++wgAddToCartReqId;
+            var done = false;
+
+            function setBtnSuccess() {
+                if (!btn) return;
+                btn.classList.remove('loading');
+                btn.classList.add('success');
+                btn.disabled = false;
+                var orig = btn.dataset.origHtml || btn.innerHTML;
+                btn.dataset.origHtml = orig;
+                btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Đã thêm!';
+                setTimeout(function() {
+                    btn.classList.remove('success');
+                    btn.innerHTML = orig;
+                    delete btn.dataset.origHtml;
+                }, 2200);
+            }
+
+            function setBtnFail() {
+                if (!btn) return;
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+
+            /**
+             * Race-resilient reply handler — chống case bài viết cũ có inline listener
+             * cũng xử lý cart-add → 2 fetch song song, 1 thành công + 1 bị Haravan 429.
+             * Chiến lược: success luôn thắng. Error chờ 800ms — nếu sau đó có success → bỏ qua.
+             */
+            var pendingErrorTimer = null;
+
+            function onReply(e) {
+                var d = e.data;
+                if (!d || typeof d !== 'object') return;
+                if (d.reqId !== reqId) return;
+                if (d.type !== 'wg-add-to-cart-success' && d.type !== 'wg-add-to-cart-error') return;
+                if (d.type === 'wg-add-to-cart-success') {
+                    if (done) return;
+                    done = true;
+                    if (pendingErrorTimer) {
+                        clearTimeout(pendingErrorTimer);
+                        pendingErrorTimer = null;
+                    }
+                    window.removeEventListener('message', onReply);
+                    setBtnSuccess();
+                    return;
+                }
+                if (done) return;
+                if (pendingErrorTimer) return;
+                pendingErrorTimer = setTimeout(function() {
+                    pendingErrorTimer = null;
+                    if (done) return;
+                    done = true;
+                    window.removeEventListener('message', onReply);
+                    setBtnFail();
+                }, 800);
+            }
+            window.addEventListener('message', onReply);
+
+            try {
+                window.parent.postMessage({
+                    type: 'wg-add-to-cart',
+                    reqId: reqId,
+                    variantId: String(variantId),
+                    quantity: qty || 1,
+                    title: title || '',
+                }, '*');
+            } catch (e) {
+                window.removeEventListener('message', onReply);
+                wgShowToast('Không gửi được tới giỏ hàng', true);
+                setBtnFail();
+                return;
+            }
+
+            setTimeout(function() {
+                if (done) return;
+                if (pendingErrorTimer) {
+                    clearTimeout(pendingErrorTimer);
+                    pendingErrorTimer = null;
+                }
+                done = true;
+                window.removeEventListener('message', onReply);
+                /** Fallback toast trong iframe — chỉ chạy khi snippet không trả lời (chưa cài). */
+                wgShowToast('Không kết nối được giỏ hàng (snippet chưa cài?)', true);
+                setBtnFail();
+            }, 6000);
+        }
+
+        // ============================================================
+        // QUICKVIEW — chỉ postMessage lên parent. Modal render trong storefront page.
+        // ============================================================
+        function wgRequestQuickview(triggerEl) {
+            var product = {
+                id: triggerEl.dataset.productId || '',
+                title: triggerEl.dataset.productTitle || '',
+                handle: triggerEl.dataset.productHandle || '',
+                sku: triggerEl.dataset.productSku || '',
+                discountPct: parseInt(triggerEl.dataset.discountPct || '0', 10) || 0,
+                featured_image: triggerEl.dataset.productFeaturedImage || '',
+                price: parseFloat(triggerEl.dataset.productPrice || '0') || 0,
+                compare_at_price: parseFloat(triggerEl.dataset.productCompareAtPrice || '0') || 0,
+                images: [],
+                variants: [],
+                options: [],
+            };
+            try {
+                product.images = JSON.parse(triggerEl.dataset.productImages || '[]');
+            } catch (e) {}
+            try {
+                product.variants = JSON.parse(triggerEl.dataset.productVariants || '[]');
+            } catch (e) {}
+            try {
+                product.options = JSON.parse(triggerEl.dataset.productOptions || '[]');
+            } catch (e) {}
+            var pub = window.__WG_PUBLIC_CFG || {};
+            try {
+                window.parent.postMessage({
+                    type: 'wg-open-quickview',
+                    product: product,
+                    showPrice: pub.show_price !== false,
+                    enableAddToCart: pub.enable_add_to_cart !== false,
+                    enableContact: !!pub.enable_contact,
+                    contactLabel: pub.contact_label || 'Liên hệ',
+                    contactUrl: pub.contact_url || '',
+                    primaryColor: pub.primary_color || '#e84040',
+                    fontFamily: pub.font_family || '',
+                    fontImportUrl: pub.font_import_url || '',
+                    customCss: pub.custom_css || '',
+                }, '*');
+            } catch (e) {
+                wgShowToast('Không mở được quickview (snippet chưa cài?)', true);
+            }
+        }
+
+        // ============================================================
+        // CARD INTERACTIONS — thumb switch, qty +/-, addtocart, quickview
+        // ============================================================
+        document.addEventListener('click', function(e) {
+            var root = document.getElementById('wg-root');
+            if (!root) return;
+
+            var thumb = e.target.closest && e.target.closest('.wg-thumb');
+            if (thumb && root.contains(thumb)) {
+                var card = thumb.closest('.wg-product-card');
+                var mainImg = card && card.querySelector('.wg-product-image-wrap img');
+                var src = thumb.dataset.src;
+                if (mainImg && src) {
+                    mainImg.src = src;
+                    card.querySelectorAll('.wg-thumb').forEach(function(t2) {
+                        t2.classList.remove('active');
+                    });
+                    thumb.classList.add('active');
+                }
+                return;
+            }
+
+            var qtyPlus = e.target.closest && e.target.closest('.wg-qty-plus');
+            var qtyMinus = e.target.closest && e.target.closest('.wg-qty-minus');
+            if ((qtyPlus || qtyMinus) && root.contains(e.target)) {
+                var wrap = e.target.closest('.wg-qty-wrap');
+                var display = wrap && wrap.querySelector('.wg-qty-number');
+                if (display) {
+                    var cur = parseInt(display.textContent || '1', 10) || 1;
+                    var next = qtyPlus ? cur + 1 : Math.max(1, cur - 1);
+                    display.textContent = String(next);
+                    var card2 = wrap.closest('.wg-product-card');
+                    var sync = card2 && card2.querySelector('.wg-btn-addcart');
+                    if (sync) sync.dataset.qty = String(next);
+                }
+                return;
+            }
+
+            var cartBtn = e.target.closest && e.target.closest('.wg-btn-addcart');
+            if (cartBtn && root.contains(cartBtn)) {
+                var vid = cartBtn.dataset.variantId;
+                var qty2 = parseInt(cartBtn.dataset.qty || '1', 10) || 1;
+                var title = cartBtn.dataset.productTitle || '';
+                wgAddToCart(vid, qty2, title, cartBtn);
+                return;
+            }
+
+            var qvBtn = e.target.closest && e.target.closest('.wg-action-view');
+            if (qvBtn && root.contains(qvBtn)) {
+                wgRequestQuickview(qvBtn);
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

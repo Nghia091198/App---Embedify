@@ -1,3 +1,498 @@
+/**
+ * CSS global của app: Tailwind + style tùy chỉnh (widget preview, v.v.).
+ * - Token / font / màu dùng chung: chỉnh `tailwind.config.js` (theme.extend).
+ * - Component UI: ưu tiên utility trong `.tsx`; chỉ thêm vào đây khi cần global hoặc HTML chèn từ string.
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Xem trước admin + đồng bộ class từ blockRenderer / storefront (widget-frame.html)
+   --wg-color / --wg-font có thể ghi đè inline từ ContentDetail (config Thiết lập). */
+
+.wg-preview,
+.wg-preview-root {
+    /* --wg-color: #e84040; */
+    /* --wg-font: 'DM Sans', 'Inter', system-ui, sans-serif; */
+    font-family: var(--wg-font);
+    background: var(--wg-page-bg, transparent);
+    color: var(--wg-page-text, inherit);
+}
+
+
+/* ===== BLOCK LAYOUT ===== */
+
+.wg-block {
+    margin: 16px 0;
+}
+
+.wg-block-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--wg-title-text, #1a1a1a);
+    margin-bottom: 16px;
+    font-family: var(--wg-font);
+}
+
+/* Block chưa có SP: khung cao + icon plus trang trí (không tương tác) */
+.wg-block.wg-block--empty .wg-block-empty {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px dashed #e2e8f0;
+    background: #f8fafc;
+    color: #94a3b8;
+}
+
+.wg-block-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #cbd5e1;
+}
+
+.wg-block--grid .wg-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.wg-grid.wg-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.wg-grid.wg-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.wg-grid.wg-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.wg-grid.wg-cols-5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 767px) {
+    .wg-grid.wg-cols-m-1 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .wg-grid.wg-cols-m-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.wg-block--slider {
+    overflow: hidden;
+}
+
+.wg-block--slider .wg-slider {
+    width: 100%;
+    position: relative;
+}
+
+.wg-block--slider .wg-slider[data-wg-overflow='1'] {
+    padding-bottom: 28px;
+}
+
+.wg-block--slider .wg-slider[data-wg-overflow='1'] .swiper-pagination {
+    bottom: 4px !important;
+}
+
+.wg-block--slider .wg-slider .swiper-button-prev,
+.wg-block--slider .wg-slider .swiper-button-next {
+    color: #1d9e75;
+}
+
+.wg-block--slider .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+.wg-block--slider .swiper-slide {
+    height: auto;
+    flex-shrink: 0;
+    width: auto;
+}
+
+
+/* ===== PRODUCT LOOP CARD ===== */
+
+.wg-product-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: var(--wg-font);
+    border: 1px solid var(--wg-border, transparent);
+}
+
+.wg-product-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #222;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    z-index: 2;
+}
+
+.wg-product-link {
+    display: block;
+    text-decoration: none;
+}
+
+.wg-product-image-outer {
+    position: relative;
+}
+
+.wg-product-image-outer--qv .wg-product-qv-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 26, 26, 0.14);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    pointer-events: none;
+}
+
+@media (hover: hover) {
+    .wg-product-card:hover .wg-product-image-outer--qv .wg-product-qv-overlay,
+    .wg-product-card:focus-within .wg-product-image-outer--qv .wg-product-qv-overlay {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+@media (hover: none) {
+    .wg-product-image-outer--qv .wg-product-qv-overlay {
+        opacity: 1;
+        pointer-events: none;
+        background: linear-gradient(180deg, transparent 52%, rgba(0, 0, 0, 0.38) 100%);
+        align-items: flex-end;
+        padding-bottom: 12px;
+    }
+    .wg-product-image-outer--qv .wg-action-view--overlay {
+        pointer-events: auto;
+    }
+}
+
+.wg-product-image-wrap {
+    background: #f5f3ef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 220px;
+    overflow: hidden;
+}
+
+.wg-product-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.3s ease;
+}
+
+.wg-product-card:hover .wg-product-image-wrap img {
+    transform: scale(1.04);
+}
+
+.wg-product-thumbs {
+    display: flex;
+    gap: 6px;
+    padding: 8px 0px 4px;
+}
+
+.wg-thumb {
+    width: 44px;
+    height: 40px;
+    border-radius: 7px;
+    border: 1.5px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+    background: #f0ede8;
+}
+
+.wg-thumb.active {
+    border-color: var(--wg-color, #e84040);
+}
+
+.wg-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.wg-product-info {
+    padding: 6px 0px 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.wg-product-sku {
+    font-size: 10px;
+    color: #aaa;
+    margin-bottom: 3px;
+}
+
+.wg-product-name-link {
+    text-decoration: none;
+}
+
+.wg-product-name-link:hover .wg-product-name {
+    color: var(--wg-link-hover, var(--wg-color, #e84040));
+}
+
+.wg-product-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--wg-page-text, #1a1a1a);
+    line-height: 1.35;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.wg-product-price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.wg-price-sale {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--wg-color, #e84040);
+}
+
+.wg-price-original {
+    font-size: 12px;
+    color: #bbb;
+    text-decoration: line-through;
+}
+
+
+/* Actions — đồng bộ widget-frame (nhóm nút + viền brand) */
+
+.wg-product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.wg-action-view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1.5px solid color-mix(in srgb, var(--wg-color, #e84040) 32%, #e0ddd8);
+    border-radius: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.wg-action-view:hover {
+    background: color-mix(in srgb, var(--wg-color, #e84040) 8%, #fff);
+    border-color: color-mix(in srgb, var(--wg-color, #e84040) 55%, #e0ddd8);
+}
+
+.wg-action-view--overlay {
+    width: 48px;
+    height: 48px;
+    border-radius: 9999px;
+    border: none;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.wg-action-view--overlay:hover {
+    background: #fff;
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.wg-action-view svg {
+    width: 18px;
+    height: 18px;
+    color: var(--wg-color, #e84040);
+}
+
+.wg-qty-wrap {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    border: 1.5px solid #e8e5e0;
+    border-radius: 10px;
+    flex: 1.2;
+    min-width: 30px;
+    height: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #fff;
+}
+
+.wg-qty-number {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 400;
+    color: #222;
+    line-height: 1;
+}
+
+.wg-qty-divider {
+    width: 1px;
+    height: auto;
+    background: #e0ddd8;
+    margin: 0;
+}
+
+.wg-qty-btn-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.wg-qty-btn {
+    flex: 1;
+    background: #fff;
+    border: none;
+    font-size: 11px;
+    color: #888;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    font-weight: 700;
+    transition: color 0.15s, background 0.15s;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.wg-qty-btn+.wg-qty-btn {
+    border-top: 1px solid #e0ddd8;
+}
+
+.wg-qty-btn:hover {
+    color: #333;
+}
+
+.wg-btn-addcart {
+    flex: 1 1 120px;
+    min-height: 40px;
+    background: var(--wg-btn-bg, var(--wg-color, #e84040));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+
+.wg-btn-addcart:hover {
+    background: color-mix(in srgb, var(--wg-btn-bg, var(--wg-color, #e84040)) 85%, black);
+}
+
+.wg-btn-contact {
+    flex: 1 1 120px;
+    min-height: 40px;
+    background: var(--wg-btn-bg, var(--wg-color, #e84040));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    transition: background 0.15s;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.wg-btn-contact:hover {
+    background: color-mix(in srgb, var(--wg-btn-bg, var(--wg-color, #e84040)) 85%, black);
+    color: #fff;
+}
+
+.wg-btn-addcart.loading {
+    background: #888;
+    cursor: not-allowed;
+}
+
+.wg-btn-addcart.success {
+    background: #27ae60;
+}
+
+.wg-btn-addcart svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    transform: translateX(2px);
+}
+
+.wg-thumbnail-picker-count {
+    border: none !important;
+    border-radius: 0 0 6px 0;
+    left: 0;
+    top: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+@media screen and (max-width: 992px) {
+    .wg-product-actions {
+        gap: 6px;
+    }
+    .wg-btn-addcart {
+        font-size: 0;
+        flex: 1 1 44px;
+        min-width: 44px;
+        padding: 0;
+    }
+}
