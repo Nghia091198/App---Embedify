@@ -55,30 +55,27 @@ export async function callbackHandler(req: Request, res: Response): Promise<void
     return;
   }
 
-  if (!body.code || !body.state) {
-    const keys =
-      req.body && typeof req.body === 'object' && !Array.isArray(req.body)
-        ? Object.keys(req.body as object).join(',')
-        : '';
-    console.error('[callback] missing code/state', {
-      contentType: req.headers['content-type'],
-      bodyKeys: keys,
-    });
+  if (!body.code) {
     res.redirect(`${appOrigin}?auth_error=missing_params`);
     return;
   }
-
-  const nonce = await consumeOAuthState(body.state);
-  if (!nonce) {
-    res.redirect(`${appOrigin}?auth_error=invalid_state`);
-    return;
+  
+  // Haravan install lần đầu không gửi state — bỏ qua verify state
+  // Re-authorize thông thường có state → verify như bình thường
+  let nonce: string | null = null;
+  if (body.state) {
+    nonce = await consumeOAuthState(body.state);
+    if (!nonce) {
+      res.redirect(`${appOrigin}?auth_error=invalid_state`);
+      return;
+    }
   }
 
   // id_token từ form post (Hybrid Flow) — optional
   const id1 = body.id_token ? decodeJwtPayload(body.id_token) : null;
 
   // Nếu có id_token trong form post thì verify nonce ngay
-  if (id1 && String(id1.nonce ?? '') !== nonce) {
+  if (nonce && id1 && String(id1.nonce ?? '') !== nonce) {
     res.redirect(`${appOrigin}?auth_error=nonce_mismatch`);
     return;
   }
@@ -93,7 +90,7 @@ export async function callbackHandler(req: Request, res: Response): Promise<void
   const id2 = tokens.id_token ? decodeJwtPayload(tokens.id_token) : null;
 
   // Nếu chỉ có id_token từ token exchange thì verify nonce ở đây
-  if (!id1 && id2 && String(id2.nonce ?? '') !== nonce) {
+  if (nonce && !id1 && id2 && String(id2.nonce ?? '') !== nonce) {
     res.redirect(`${appOrigin}?auth_error=nonce_mismatch`);
     return;
   }

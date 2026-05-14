@@ -1,3 +1,5 @@
+# Docker chỉ đọc .dockerignore tại thư mục BUILD CONTEXT (thường là root repo).
+# Giữ danh sách trùng root `.dockerignore` phòng ai đặt context nhầm thư mục `docker/`.
 node_modules
 dist
 .git
@@ -5,5 +7,6 @@ dist
 *.log
 .env.local
 .env.development
+.env.production
 .DS_Store
 .cursor

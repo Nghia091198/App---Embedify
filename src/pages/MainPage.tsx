@@ -461,7 +461,7 @@ export function MainPage({ shopDomain }: MainPageProps) {
                   'success',
                 );
               } else {
-                showToast('Đã lưu widget và cập nhật body HTML (iframe widget-frame) lên Haravan.', 'success');
+                showToast('Đã lưu widget và cập nhật lên Haravan.', 'success');
               }
             } else if (j.haravan_touch_error) {
               showToast(`Đã lưu widget. Haravan: ${j.haravan_touch_error}`, 'warning');

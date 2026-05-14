@@ -1,0 +1,13 @@
+# Phải nằm ở ROOT repo (cùng cấp package.json). Docker chỉ đọc file này theo build context `.`
+# — không dùng docker/.dockerignore khi chạy `docker build -f docker/Dockerfile .` từ root.
+node_modules
+dist
+.git
+.gitignore
+*.log
+.env.local
+.env.development
+.env.production
+.DS_Store
+.cursor
+npm-debug.log*

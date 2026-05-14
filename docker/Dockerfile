@@ -5,20 +5,23 @@
 FROM node:20-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci && \
-  case "$(uname -m)" in \
-    x86_64)   npm install --no-save @rollup/rollup-linux-x64-gnu ;; \
-    aarch64)  npm install --no-save @rollup/rollup-linux-arm64-gnu ;; \
-    armv7l)   npm install --no-save @rollup/rollup-linux-arm-gnueabihf ;; \
-    *) echo "Unsupported arch: $(uname -m)" >&2; exit 1 ;; \
-  esac
+# Không `npm i @rollup/rollup-linux-*@latest` — lệch phiên bản với rollup trong lockfile có thể làm bundle JS ~vài trăm byte (chỉ polyfill).
+RUN npm ci
 
 FROM node:20-bookworm-slim AS build
 WORKDIR /app
+# VPS RAM thấp — tránh minify/Rollup bị OOM giữa chừng (file JS chỉ vài trăm byte).
+ENV NODE_OPTIONS=--max-old-space-size=4096
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm run build
-
+# Không dùng `COPY . .` — tránh host ghi đè node_modules (bundle ~711B) kể cả .dockerignore sai tên/SFTP.
+COPY package.json package-lock.json ./
+COPY index.html vite.config.ts tsconfig.json tsconfig.app.json tsconfig.node.json ./
+COPY postcss.config.js tailwind.config.js ./
+COPY src ./src
+COPY public ./public
+RUN rm -rf dist node_modules/.vite && \
+    node_modules/.bin/vite build && \
+    sed -i '/src="\/src\/app\/index\.tsx"/d' dist/index.html
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
@@ -32,7 +35,10 @@ COPY --from=build /app/index.html      ./
 COPY --from=build /app/vite.config.ts  ./
 COPY --from=build /app/tsconfig.json   ./
 COPY --from=build /app/tsconfig.node.json ./
+COPY --from=build /app/tsconfig.app.json  ./
 COPY --from=build /app/src             ./src
 
-EXPOSE 8080
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "8080"]
+EXPOSE 8090
+
+# tsx lets Node resolve dynamic imports of ./src/**/*.ts from vite.config.ts during preview
+CMD ["node", "--import", "tsx/esm", "./node_modules/.bin/vite", "preview", "--host", "0.0.0.0", "--port", "8090"]
